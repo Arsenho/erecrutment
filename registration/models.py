@@ -5,8 +5,9 @@ from django.db import models
 class User(models.Model):
     name = models.CharField(max_length=128, null=True, blank=True)
     surename = models.CharField(max_length=128, null=True, blank=True)
+    username = models.CharField(max_length=64, unique=True, null=True, blank=True)
     email = models.EmailField(max_length=128, null=True, blank=True, unique=True)
-    password = models.EmailField(max_length=128, null=True, blank=True)
+    password = models.CharField(max_length=128, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -16,7 +17,7 @@ class Admin(User):
 
 
 class Employer(User):
-    enterprise_name = models.CharField(max_length=128, null=True, blank=True)
+    company_name = models.CharField(max_length=128, null=True, blank=True)
     website = models.CharField(max_length=128, null=True, blank=True)
 
 
