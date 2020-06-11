@@ -37,11 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'crispy_forms',
+    'xadmin',
     'registration',
     'evaluation',
     'joboffer',
     'notification',
 ]
+
+AUTH_USER_MODEL = 'registration.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
