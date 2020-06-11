@@ -14,8 +14,15 @@ class Company(models.Model):
     site = models.CharField(max_length=128, blank=True, null=True)
     location = models.CharField(max_length=128, blank=True, null=True)
     description = models.CharField(max_length=512, blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        Employer,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="employer_who_created_the_company"
+    )
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateTimeField(auto_now=True, null=True, blank=True)
 
 
 class Offer(models.Model):
