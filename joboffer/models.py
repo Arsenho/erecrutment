@@ -14,6 +14,8 @@ class Company(models.Model):
     site = models.CharField(max_length=128, blank=True, null=True)
     location = models.CharField(max_length=128, blank=True, null=True)
     description = models.CharField(max_length=512, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
 
 class Offer(models.Model):

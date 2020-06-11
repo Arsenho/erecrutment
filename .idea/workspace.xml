@@ -3,14 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="014529cb-da73-4096-90bd-b28cb5e512c9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/erecrutment/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/erecrutment/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/erecrutment/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/erecrutment/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/joboffer/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/joboffer/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/notification/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/registration/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/registration/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/registration/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/registration/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/joboffer/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/joboffer/serializers.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

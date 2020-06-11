@@ -1,7 +1,16 @@
 from rest_framework import serializers
 
 from registration.serializers import CandidateSerializer
-from .models import Offer, Apply
+from .models import Offer, Apply, Company
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        exclude = [
+            'created',
+            'modified',
+        ]
 
 
 class OfferSerializer(serializers.ModelSerializer):
