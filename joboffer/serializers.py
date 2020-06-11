@@ -5,7 +5,7 @@ from .models import Offer, Apply, Company
 
 
 class CompanySerializer(serializers.ModelSerializer):
-    created_by = EmployerSerializer()
+    # created_by = EmployerSerializer()
 
     class Meta:
         model = Company
@@ -13,12 +13,21 @@ class CompanySerializer(serializers.ModelSerializer):
             'created',
             'modified',
         ]
+        extra_kwargs = {
+            'created_by': {'read_only': True},
+        }
 
 
 class OfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
-        fields = '__all__'
+        exclude = [
+            'created',
+            'modified',
+        ]
+        extra_kwargs = {
+            'published_by': {'read_only': True}
+        }
 
 
 class ApplySerializer(serializers.ModelSerializer):
