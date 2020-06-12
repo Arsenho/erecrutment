@@ -1,11 +1,15 @@
 from django.db import models
 from evaluation.models import Test
-from registration.models import Employer, Candidate
+from registration.models import Employer, Candidate, User
 
 
 # Create your models here.
 
 class Company(models.Model):
+    class Meta:
+        verbose_name = "Entreprise"
+        permissions = []
+
     name = models.CharField(max_length=128, blank=True)
     company_type = models.CharField(max_length=128, blank=True, null=True)
     company_domain = models.CharField(max_length=256, blank=True, null=True)
@@ -14,6 +18,15 @@ class Company(models.Model):
     site = models.CharField(max_length=128, blank=True, null=True)
     location = models.CharField(max_length=128, blank=True, null=True)
     description = models.CharField(max_length=512, blank=True, null=True)
+    created_by = models.ForeignKey(
+        User,  # the User can be the superadmin or an employer
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="user_who_created_the_company"
+    )
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateTimeField(auto_now=True, null=True, blank=True)
 
 
 class Offer(models.Model):
@@ -56,7 +69,7 @@ class Offer(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     published_by = models.ForeignKey(
-        Employer,
+        User,  # the user can be either the superuser or the employer
         on_delete=models.CASCADE,
         related_name="employer_created_offer",
         null=True
@@ -78,6 +91,7 @@ class Apply(models.Model):
     offer = models.ForeignKey(Offer, on_delete=models.CASCADE, null=True, blank=True)
     cv = models.FileField(upload_to='candidates/cvs')
     created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
 
 class Attachment(models.Model):
@@ -87,3 +101,5 @@ class Attachment(models.Model):
         on_delete=models.CASCADE,
         blank=True
     )
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateTimeField(auto_now=True, blank=True, null=True)

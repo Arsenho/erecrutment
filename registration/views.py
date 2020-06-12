@@ -86,7 +86,8 @@ class EmployerMiniList(generics.ListCreateAPIView):
 @api_view(['POST'])
 def login_view(request):
     username, password = '', ''
-    if ('username', 'password') in request.data:
+    print(request.data)
+    if 'username' in request.data and 'password' in request.data:
         username = request.data['username']
         password = request.data['password']
     user = authenticate(username=username, password=password)
