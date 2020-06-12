@@ -6,6 +6,10 @@ from registration.models import Employer, Candidate, User
 # Create your models here.
 
 class Company(models.Model):
+    class Meta:
+        verbose_name = "Entreprise"
+        permissions = []
+
     name = models.CharField(max_length=128, blank=True)
     company_type = models.CharField(max_length=128, blank=True, null=True)
     company_domain = models.CharField(max_length=256, blank=True, null=True)
@@ -87,6 +91,7 @@ class Apply(models.Model):
     offer = models.ForeignKey(Offer, on_delete=models.CASCADE, null=True, blank=True)
     cv = models.FileField(upload_to='candidates/cvs')
     created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
 
 class Attachment(models.Model):
@@ -96,3 +101,5 @@ class Attachment(models.Model):
         on_delete=models.CASCADE,
         blank=True
     )
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
