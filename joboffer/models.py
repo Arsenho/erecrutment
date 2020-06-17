@@ -75,7 +75,11 @@ class Offer(models.Model):
         null=True
     )
     description = models.TextField(null=True, blank=True)
-    tests = models.ManyToManyField(Test, blank=True)
+    tests = models.ManyToManyField(
+        Test,
+        through="TestForOffer",
+        blank=True
+    )
     applicants = models.ManyToManyField(
         Candidate,
         related_name="candidates_applying_for_offer",
@@ -84,6 +88,22 @@ class Offer(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TestForOffer(models.Model):
+    offer = models.ForeignKey(
+        Offer,
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    test = models.ForeignKey(
+        Test,
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    priority = models.IntegerField(default=1)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
 
 class Apply(models.Model):
