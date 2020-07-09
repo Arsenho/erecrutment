@@ -1,5 +1,5 @@
 /venv/*
-./idea/*
-/joboffer/__pycache__/*
-/registration/__pycache__/*
-/evaluation/__pycache__/*
+#./idea/*
+#/joboffer/__pycache__/*
+#/registration/__pycache__/*
+#/evaluation/__pycache__/*
