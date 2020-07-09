@@ -2,6 +2,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
 from .decorators import login_required_for_candidate, login_required_for_employer
 
@@ -51,28 +52,18 @@ class OfferList(generics.ListCreateAPIView):
 
     @login_required_for_employer
     def post(self, request, *args, **kwargs):
-        group_admin = Group.objects.get(name='admin')
-        group_employer = Group.objects.get(name='employer')
-        user = UserSerializer(request.user)
-        print(user.data)
-        if (group_admin.id in user.data['groups']) or \
-                (group_employer.id in user.data['groups']):
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.validated_data['published_by'] = request.user
-            print(serializer.validated_data)
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            return Response(
-                data=serializer.data,
-                status=status.HTTP_201_CREATED,
-                headers=headers
-            )
-        else:
-            return Response(
-                data={'message': 'please login as employer or superuser'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+        print(request.data)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data['published_by'] = request.user
+        print(serializer.validated_data)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
 
 class ApplyList(generics.ListCreateAPIView):
@@ -100,3 +91,17 @@ class ApplyList(generics.ListCreateAPIView):
             headers=headers
         )
 
+
+class OfferCategoryList(APIView):
+    serializer_class = OfferSerializer
+
+    def get(self, request, *args, **kwargs):
+        categories = Offer.CATEGORY_TYPE
+        offer_categories = []
+        for item in categories:
+            if item[0] != 'aucune':
+                offer_categories.append(item[1])
+        return Response(
+            data=offer_categories,
+            status=status.HTTP_200_OK
+        )

@@ -34,6 +34,16 @@ class Offer(models.Model):
         ('emploi', 'Emploi'),
         ('stage', 'stage'),
     ]
+    CATEGORY_TYPE = [
+        ('it', 'IT'),
+        ('aucune', 'Aucune'),
+        ('hotelerie', 'Hotelerie'),
+        ('enseignement', 'Enseignement'),
+        ('immobilier', 'Immobilier'),
+        ('finance', 'Finance'),
+        ('medicale', 'Medicale'),
+        ('ingenieurie', 'Ingenieurie'),
+    ]
     EXPERIENCES = [
         ('', '0-1'),
         ('', '1-3'),
@@ -54,10 +64,16 @@ class Offer(models.Model):
     )
     level = models.CharField(max_length=128, blank=True, null=True)
     contract_type = models.CharField(max_length=128, blank=True, null=True)
-    salary = models.IntegerField(blank=True, null=True)
+    salary = models.CharField(max_length=128, blank=True, null=True)
     post = models.CharField(max_length=128, blank=True)
     offer_type = models.CharField(
         choices=OFFER_TYPES,
+        null=True,
+        blank=True,
+        max_length=32
+    )
+    offer_category = models.CharField(
+        choices=CATEGORY_TYPE,
         null=True,
         blank=True,
         max_length=32

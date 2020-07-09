@@ -4,9 +4,11 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from registration.decorators import already_logged_in
 from registration.models import User, Candidate, Employer
 from registration.serializers import UserSerializer, UserMiniSerializer, CandidateSerializer, CandidateMiniSerializer, \
-    EmployerSerializer, EmployerMiniSerializer
+    EmployerSerializer, EmployerMiniSerializer, LoginSerializer
 from rest_framework.decorators import api_view
 
 
@@ -34,6 +36,7 @@ class CandidateMiniList(generics.ListCreateAPIView):
     queryset = Candidate.objects.all()
     serializer_class = CandidateMiniSerializer
 
+    @already_logged_in
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -64,6 +67,7 @@ class EmployerMiniList(generics.ListCreateAPIView):
     queryset = Employer.objects.all()
     serializer_class = EmployerMiniSerializer
 
+    @already_logged_in
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -84,6 +88,8 @@ class EmployerMiniList(generics.ListCreateAPIView):
 
 
 class Login(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = UserMiniSerializer(request.user)
@@ -97,6 +103,7 @@ class Login(generics.GenericAPIView):
                 status=status.HTTP_200_OK
             )
 
+    @already_logged_in
     def post(self, request, *args, **kwargs):
         username, password = '', ''
         print(request.data)

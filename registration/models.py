@@ -19,6 +19,8 @@ class Admin(User):
 
 
 class Employer(User):
+    class Meta:
+        verbose_name = "Employeur"
     company_name = models.CharField(max_length=128, null=True, blank=True)
     website = models.CharField(max_length=128, null=True, blank=True)
 

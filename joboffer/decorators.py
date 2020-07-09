@@ -47,7 +47,7 @@ def login_required_for_employer(view_function):
                 else:
                     return Response(
                         data={
-                            'success': False,
+                            'success': {'flag': True, 'message': 'Failed !'},
                             'message': 'Please login as the superuser or as an employer !'
                         },
                         status=status.HTTP_401_UNAUTHORIZED
@@ -55,7 +55,7 @@ def login_required_for_employer(view_function):
         else:
             result = Response(
                 data={
-                    'success': False,
+                    'success': {'flag': False, 'message': 'Failed !'},
                     'message': 'Please login to continue'
                 },
                 status=status.HTTP_401_UNAUTHORIZED

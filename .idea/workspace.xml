@@ -2,58 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="014529cb-da73-4096-90bd-b28cb5e512c9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.fuse_hidden0002576200000007" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/erecrutment/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/erecrutment/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation/migrations/0002_auto_20200605_2135.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/evaluation/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/evaluation/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/evaluation/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/adminx.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/decorators.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/migrations/0002_auto_20200605_2135.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/migrations/0003_auto_20200611_0711.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/migrations/0004_auto_20200611_0745.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/migrations/0005_auto_20200611_0852.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/migrations/0006_auto_20200611_1101.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/migrations/0007_apply_modified.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/migrations/0008_auto_20200612_1522.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/mixins.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/serializers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/joboffer/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/migrations/0002_auto_20200605_2135.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/serializers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/migrations/0002_auto_20200606_1133.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/migrations/0003_auto_20200609_0716.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/serializers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/registration/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/joboffer/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/joboffer/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/joboffer/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/joboffer/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/joboffer/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/joboffer/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/joboffer/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/joboffer/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/joboffer/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/joboffer/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/registration/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/registration/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/registration/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/registration/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/registration/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/registration/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

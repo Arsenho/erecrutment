@@ -51,3 +51,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
             'created',
             'modified',
         ]
+
+
+class OfferCategory(serializers.Serializer):
+    category = serializers.CharField(max_length=128)
