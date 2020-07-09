@@ -2,7 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="014529cb-da73-4096-90bd-b28cb5e512c9" name="Default Changelist" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/.fuse_hidden0002576200000007" beforeDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/candidates/cvs/200226_Visagrafik_EinBlick_FR_Studieren.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/joboffer/decorators.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/joboffer/migrations/0006_auto_20200611_1101.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/joboffer/migrations/0007_apply_modified.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/joboffer/migrations/0008_auto_20200612_1522.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/joboffer/mixins.py" afterDir="false" />
+>>>>>>> c35058e11d50c7844bced9a7a8793851c8b41ef6
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/joboffer/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/joboffer/decorators.py" afterDir="false" />
