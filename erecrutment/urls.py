@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('xadmin/', xadmin.site.urls),
     path('', include('registration.urls')),
-
+    path('', include('joboffer.urls')),
+    path('', include('evaluation.urls')),
 ]
