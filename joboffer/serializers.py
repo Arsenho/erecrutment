@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from registration.serializers import CandidateSerializer, EmployerSerializer
-from .models import Offer, Apply, Company, Attachment
+from .models import Offer, Apply, Company, Attachment, TestForOffer
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -30,6 +30,13 @@ class OfferSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'published_by': {'read_only': True},
         }
+
+
+class TestForOfferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestForOffer
+        fields = '__all__'
+        extra_kwargs = {}
 
 
 class ApplySerializer(serializers.ModelSerializer):

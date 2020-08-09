@@ -4,11 +4,12 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .decorators import login_required_for_candidate, login_required_for_employer
+from .decorators import login_required_for_candidate, \
+    login_required_for_employer
 
 # Create your views here.
-from joboffer.models import Company, Offer, Apply
-from joboffer.serializers import CompanySerializer, OfferSerializer, ApplySerializer
+from joboffer.models import Company, Offer, Apply, TestForOffer
+from joboffer.serializers import CompanySerializer, OfferSerializer, ApplySerializer, TestForOfferSerializer
 from registration.models import User
 from registration.serializers import UserSerializer
 
@@ -64,6 +65,33 @@ class OfferList(generics.ListCreateAPIView):
             status=status.HTTP_201_CREATED,
             headers=headers
         )
+
+
+class OfferDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Offer.objects.all()
+    serializer_class = OfferSerializer
+
+    def put(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance,
+            data=request.data,
+            partial=partial
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response()
+
+
+class TestForOfferList(generics.ListCreateAPIView):
+    queryset = TestForOffer.objects.all()
+    serializer_class = TestForOfferSerializer
+
+
+class TestForOfferDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = TestForOffer.objects.all()
+    serializer_class = TestForOfferSerializer
 
 
 class ApplyList(generics.ListCreateAPIView):

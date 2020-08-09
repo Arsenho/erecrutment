@@ -1,5 +1,5 @@
 from django.db import models
-from evaluation.models import Test
+from evaluation.models import Test, Evaluation
 from registration.models import Employer, Candidate, User
 
 
@@ -96,6 +96,11 @@ class Offer(models.Model):
         through="TestForOffer",
         blank=True
     )
+    evaluations = models.ManyToManyField(
+        Evaluation,
+        through="EvaluationForOffer",
+        blank=True
+    )
     applicants = models.ManyToManyField(
         Candidate,
         related_name="candidates_applying_for_offer",
@@ -120,6 +125,20 @@ class TestForOffer(models.Model):
     priority = models.IntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+
+class EvaluationForOffer(models.Model):
+    offer = models.ForeignKey(
+        Offer,
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    evaluation = models.ForeignKey(
+        Evaluation,
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    created = models.DateTimeField(auto_now_add=True)
 
 
 class Apply(models.Model):

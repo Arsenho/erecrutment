@@ -8,10 +8,15 @@ from rest_framework.response import Response
 from rest_framework import generics
 
 # imports from current app
-from erecrutment.decorators import login_required_for_candidate, login_required_for_employer
-from evaluation.models import Question, Solution, Evaluation, Test, Participate
-from evaluation.serializers import QuestionSerializer, SolutionSerializer, EvaluationSerializer, TestSerializer, \
-    ParticipateSerializer
+from erecrutment.decorators import login_required_for_candidate, \
+    login_required_for_employer
+from evaluation.decorators import save_question_answer, is_applicant, can_take_evaluation
+from evaluation.models import Question, Solution, Test, \
+    Participate, Evaluation
+from evaluation.serializers import QuestionSerializer, SolutionSerializer, \
+    EvaluationSerializer, TestSerializer, ParticipateSerializer
+from joboffer.models import Offer, TestForOffer
+from joboffer.serializers import TestForOfferSerializer
 from registration.models import Candidate
 from registration.serializers import CandidateSerializer
 
@@ -105,19 +110,25 @@ class EvaluationList(generics.ListCreateAPIView):
         )
 
 
+def set_participants(test):
+    print('setting participants')
+    participates = Participate.objects.filter(test=test.pk)
+    test_for_offer = TestForOffer.objects.filter(test=test.pk)
+    test_for_offer_serializer = TestForOfferSerializer(test_for_offer, many=True)
+    print(test_for_offer_serializer.data)
+    candidates = []
+    for participate in participates:
+        today = datetime.date.today()
+        if today >= participate.evaluation_date:
+            print('got a participant')
+            candidate = Candidate.objects.get(id=participate.candidate.pk)
+            candidates.append(candidate.pk)
+    return candidates
+
+
 class TestList(generics.ListCreateAPIView):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
-
-    def set_participants(self, test):
-        participates = Participate.objects.filter(test=test.pk)
-        candidates = []
-        for participate in participates:
-            today = datetime.date.today()
-            if today > participate.evaluation_date:
-                candidate = Candidate.objects.get(id=participate.candidate.pk)
-                candidates.append(candidate.pk)
-        return candidates
 
     def get(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -126,7 +137,7 @@ class TestList(generics.ListCreateAPIView):
         for test in serializer.data:
             test_ = Test.objects.get(id=test.get('id'))
             data = TestSerializer(test_).data
-            data['participants'] = self.set_participants(test_)
+            data['participants'] = set_participants(test_)
             tests.append(data)
         return Response(data=tests, status=status.HTTP_200_OK)
 
@@ -142,6 +153,28 @@ class TestList(generics.ListCreateAPIView):
             status=status.HTTP_201_CREATED,
             headers=headers
         )
+
+
+class TestDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Test.objects.all()
+    serializer_class = TestSerializer
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance,
+            data=request.data,
+            partial=partial
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response()
 
 
 class ParticipateList(generics.ListCreateAPIView):
@@ -168,6 +201,11 @@ class ParticipateList(generics.ListCreateAPIView):
         )
 
 
+class ParticipateDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Participate.objects.all()
+    serializer_class = ParticipateSerializer
+
+
 def question_generator(ids: list):
     """
     Receive a list of question ids coming from a test associated to an offer
@@ -191,9 +229,9 @@ def update_questions_id(questions_ids):
     return questions_list_, question_
 
 
-def get_generated_list(test_id):
-    test_serializer = TestSerializer(Test.objects.get(id=test_id))
-    questions = list(test_serializer.data['questions'])
+def get_generated_list(test):
+    # test_serializer = TestSerializer(Test.objects.get(id=test_id))
+    questions = list(test['questions'])
     generate = question_generator(questions)
     questions_list = [next(generate) for i in range(len(questions))]
     question_id = questions_list.pop()
@@ -204,28 +242,89 @@ def get_generated_list(test_id):
 
 
 class TakeEvaluation(generics.ListCreateAPIView):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
+    queryset = Evaluation.objects.all()
+    serializer_class = EvaluationSerializer
 
+    @login_required_for_candidate
+    @is_applicant
+    @can_take_evaluation
+    def get(self, request, *args, **kwargs):
+        question = None
+
+        if 'QUESTIONS_IDS' in request.session:
+            del request.session['QUESTIONS_IDS']
+
+        if 'tests' in request.session and \
+                (request.session['tests'] != []):
+            if 'QUESTIONS_IDS' not in request.session:
+                tests = list(request.session['tests'])
+                test = tests.pop(-1)
+                request.session['tests'] = tests
+                generate = get_generated_list(test['test'])
+                question = generate[0]
+                request.session['QUESTIONS_IDS'] = generate[1]
+            return Response(
+                data=question.data,
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                data={'message': "Aucun test n'est associee a cette offre"},
+                status=status.HTTP_200_OK
+            )
+
+    @login_required_for_candidate
+    @is_applicant
+    @save_question_answer
     def post(self, request, *args, **kwargs):
-        if 'QUESTIONS_IDS' in request.session and \
-                (request.session['QUESTIONS_IDS'] != []):
-            updates = update_questions_id(list(request.session['QUESTIONS_IDS']))
-            question = updates[1]
-            request.session['QUESTIONS_IDS'] = updates[0]
+        question = None
+        if 'ok' in kwargs and kwargs['ok']:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.validated_data['candidate'] = kwargs['candidate']
+            self.perform_create(serializer)
+
+        if 'tests' in request.session and \
+                (request.session['tests'] != []):
+            if 'QUESTIONS_IDS' not in request.session:
+                tests = list(request.session['tests'])
+                test = tests.pop(-1)
+                request.session['tests'] = tests
+            if 'QUESTIONS_IDS' in request.session and \
+                    (request.session['QUESTIONS_IDS'] != []):
+                updates = update_questions_id(list(request.session['QUESTIONS_IDS']))
+                question = updates[1]
+                request.session['QUESTIONS_IDS'] = updates[0]
+            else:
+                if 'QUESTIONS_IDS' in request.session and \
+                        (request.session['QUESTIONS_IDS'] == []):
+                    del request.session['QUESTIONS_IDS']
+                    return Response(
+                        data={'message': 'test termine !', 'finish': True},
+                        status=status.HTTP_200_OK
+                    )
+                if 'tests' in request.session:
+                    generate = get_generated_list(test['test'])
+                    question = generate[0]
+                    request.session['QUESTIONS_IDS'] = generate[1]
+
+            return Response(
+                data=question.data,
+                status=status.HTTP_200_OK
+            )
         else:
             if 'QUESTIONS_IDS' in request.session and \
-                    (request.session['QUESTIONS_IDS'] == []):
-                del request.session['QUESTIONS_IDS']
+                    (request.session['QUESTIONS_IDS'] != []):
+                updates = update_questions_id(list(request.session['QUESTIONS_IDS']))
+                question = updates[1]
+                request.session['QUESTIONS_IDS'] = updates[0]
                 return Response(
-                    data={'message': 'test termine !'},
+                    data=question.data,
                     status=status.HTTP_200_OK
                 )
-            generate = get_generated_list(2)
-            question = generate[0]
-            request.session['QUESTIONS_IDS'] = generate[1]
 
-        return Response(
-            data=question.data,
-            status=status.HTTP_200_OK
-        )
+            del request.session['tests']
+            return Response(
+                data={'message': 'tous les tests termines !', 'finish': True},
+                status=status.HTTP_200_OK
+            )

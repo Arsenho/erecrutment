@@ -83,7 +83,8 @@ class Question(models.Model):
         return self.text
 
     def __str__(self):
-        return self.text 
+        return self.text
+
 
 class Solution(models.Model):
     text = models.TextField(null=True, unique=True, blank=True)
@@ -100,6 +101,9 @@ class Solution(models.Model):
         null=True, blank=True
     )
     description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.pk) + " -> " + str(self.text)
 
 
 class Evaluation(models.Model):
