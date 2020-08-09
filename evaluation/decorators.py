@@ -7,7 +7,7 @@ from rest_framework import status
 from evaluation.models import Solution, Test, Evaluation
 from evaluation.serializers import SolutionSerializer, EvaluationSerializer, \
     TestSerializer
-from joboffer.models import Offer, TestForOffer
+from joboffer.models import Offer, TestForOffer, EvaluationForOffer
 from joboffer.serializers import OfferSerializer, TestForOfferSerializer
 
 
@@ -36,8 +36,8 @@ def save_question_answer(view_function):
 def is_applicant(view_function):
     @wraps(view_function)
     def wrapped(self, request, *args, **kwargs):
-        if 'offer_id' in request.session:
-            offer = Offer.objects.get(pk=int(request.session['offer_id']))
+        if 'offer_id' in request.GET:
+            offer = Offer.objects.get(pk=int(request.GET['offer_id']))
             offer_applicants = offer.applicants.all()
             if kwargs['candidate'] in offer_applicants:
                 today = datetime.date.today()
@@ -65,11 +65,13 @@ def is_applicant(view_function):
 
 
 def get_tests_for_offer(request):
+    offer_id = None
     if 'offer_id' in request.GET:
         offer_id = int(request.GET['offer_id'])
         request.session['offer_id'] = offer_id
     try:
         offer = Offer.objects.get(pk=offer_id)
+        request.session['offer'] = OfferSerializer(offer, many=False).data
         offers_tests = TestForOffer.objects.filter(offer=offer)
         offers_tests_serializer = TestForOfferSerializer(offers_tests, many=True)
         tests = []
@@ -96,15 +98,27 @@ def get_tests_for_offer(request):
     return tests
 
 
+def has_taken_evaluation_tests(eval_for_offer, candidate):
+    for line in eval_for_offer:
+        current_eval = line.evaluation
+        current_candidate = current_eval.candidate
+        if current_candidate == candidate:
+            return True
+    return False
+
+
 def can_take_evaluation(view_function):
     @wraps(view_function)
     def _wrapped(self, request, *args, **kwargs):
         tests = get_tests_for_offer(request=request)
+        print('i have tests')
         try:
-            test_for_offer = TestForOffer.objects.filter()
-            candidate_evaluation = Evaluation.objects.filter(candidate=kwargs['candidate'])
+            offer = request.session['offer']
+            print(offer)
+            eval_for_offer = EvaluationForOffer.objects.filter(offer=offer['id'])
+            has_taken = has_taken_evaluation_tests(eval_for_offer, kwargs['candidate'])
 
-            if candidate_evaluation:
+            if has_taken:
                 return Response(
                     data={'take_evaluation': True},
                     status=status.HTTP_200_OK

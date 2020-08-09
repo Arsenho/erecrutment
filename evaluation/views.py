@@ -15,8 +15,8 @@ from evaluation.models import Question, Solution, Test, \
     Participate, Evaluation
 from evaluation.serializers import QuestionSerializer, SolutionSerializer, \
     EvaluationSerializer, TestSerializer, ParticipateSerializer
-from joboffer.models import Offer, TestForOffer
-from joboffer.serializers import TestForOfferSerializer
+from joboffer.models import Offer, TestForOffer, EvaluationForOffer
+from joboffer.serializers import TestForOfferSerializer, EvalForOfferSerializer
 from registration.models import Candidate
 from registration.serializers import CandidateSerializer
 
@@ -241,6 +241,22 @@ def get_generated_list(test):
     return question, questions_list
 
 
+def save_evaluation_for_offer(request, evaluation):
+    if 'offer' in request.session:
+        offer = request.session['offer']
+        data = {
+            'offer': offer['id'],
+            'evaluation': evaluation['id']
+        }
+        eval_for_offer = EvalForOfferSerializer(data=data, many=False)
+        if eval_for_offer.is_valid():
+            eval_for_offer.save()
+        else:
+            print("Erreur lors de la sauvegarde Eval for offer")
+        return True
+    return False
+
+
 class TakeEvaluation(generics.ListCreateAPIView):
     queryset = Evaluation.objects.all()
     serializer_class = EvaluationSerializer
@@ -283,6 +299,7 @@ class TakeEvaluation(generics.ListCreateAPIView):
             serializer.is_valid(raise_exception=True)
             serializer.validated_data['candidate'] = kwargs['candidate']
             self.perform_create(serializer)
+            save_evaluation_for_offer(request, evaluation=serializer.data)
 
         if 'tests' in request.session and \
                 (request.session['tests'] != []):
