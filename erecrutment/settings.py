@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'evaluation',
     'joboffer',
     'notification',
+    'dashboard',
 ]
 
 AUTH_USER_MODEL = 'registration.User'
