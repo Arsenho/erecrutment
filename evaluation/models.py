@@ -118,6 +118,12 @@ class Evaluation(models.Model):
         blank=True, null=True,
         related_name="candidate_who_answered_question"
     )
+    test = models.ForeignKey(
+        Test,
+        on_delete=models.CASCADE,
+        blank=True, null=True,
+        related_name="test_for_current_evaluation"
+    )
     created = models.DateTimeField(auto_now_add=True)
     answer = models.ForeignKey(
         Solution,

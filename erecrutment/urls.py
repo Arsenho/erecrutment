@@ -25,4 +25,5 @@ urlpatterns = [
     path('', include('registration.urls')),
     path('', include('joboffer.urls')),
     path('', include('evaluation.urls')),
+    path('', include('dashboard.urls')),
 ]
