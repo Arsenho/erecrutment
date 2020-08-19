@@ -10,6 +10,7 @@ from evaluation.serializers import TestSerializer, EvaluationSerializer, \
     SolutionSerializer
 from evaluation.models import Solution, Test
 from joboffer.models import Apply
+from registration.models import Candidate
 from registration.serializers import CandidateSerializer
 from .decorators import *
 
@@ -58,8 +59,8 @@ def candidate_participated_to_test(offer):
             }
             if current_data not in candidates:
                 cpt += 1
-                chartData.append(cpt)
                 candidates.append(current_data)
+        chartData.append(cpt)
     return candidates, chartData, labels
 
 
@@ -143,7 +144,7 @@ def candidate_passed_test(corr_per_candidate):
                 'candidate': candidate_data['candidate'],
             }
             if candidate_data['passed_percentage'] >= 50:
-                current_data['passed_percentage'] = candidate_data['passed_percentage']
+                current_data['passed_percentage'] = round(candidate_data['passed_percentage'], 2)
                 candidate_passed_data.append(current_data)
         test = Test.objects.get(id=data['test'])
         current_test = {
@@ -169,7 +170,7 @@ def candidate_failed_test(corr_per_candidate):
                 'candidate': candidate_data['candidate'],
             }
             if candidate_data['passed_percentage'] < 50:
-                current_data['failed_percentage'] = candidate_data['passed_percentage']
+                current_data['failed_percentage'] = round(candidate_data['passed_percentage'], 2)
                 candidate_failed_data.append(current_data)
         test = Test.objects.get(id=data['test'])
         current_test = {
@@ -196,9 +197,10 @@ def candidate_passed_all_test(participants, candidate_passed_tests):
                     total += passed['passed_percentage']
                     print(total)
         if cpt == len(candidate_passed_tests):
+            candidate = Candidate.objects.get(id=candidate)
             current_data = {
-                'candidate': candidate,
-                'total_percentage': total / len(candidate_passed_tests)
+                'candidate': candidate.username,
+                'total_percentage': round((total / len(candidate_passed_tests)), 2)
             }
             candidate_passed_all_test_data.append(current_data)
     return candidate_passed_all_test_data
@@ -206,6 +208,8 @@ def candidate_passed_all_test(participants, candidate_passed_tests):
 
 def get_data(tests, evaluations_for_offer):
     data = []
+    labels = []
+    chartData = []
     number_of_participants = candidates_from_evaluation(evaluations_for_offer)[1]
     for test in tests:
         cpt = 0
@@ -217,9 +221,11 @@ def get_data(tests, evaluations_for_offer):
             'number_of_question_answered_by_all_candidates': cpt,  # Nombre de candidat ayant pris part a ce test
             'number_of_participants': number_of_participants
         }
+        labels.append(test.title)
+        chartData.append(cpt)
         data.append(data_for_test)
 
-    return data
+    return data, labels, chartData
 
 
 def get_applicants_per_period(appliances):
@@ -276,14 +282,64 @@ class ParticipantForTest(APIView):
             evaluations_for_offer = all_evaluations_for_offer(offer)
             data = get_data(tests, evaluations_for_offer)
 
+            labels = data[1]
+            chartData = data[2]
+            chartLabel = "Nombre de questions repondues par test"
+
+            data_set = {
+                "labels": labels,
+                "chartLabel": chartLabel,
+                "chartData": chartData,
+            }
             return Response(
-                data=data,
+                data=data_set,
                 status=status.HTTP_200_OK
             )
 
 
-class AverageParticipantForOffer(APIView):
-    pass
+def percentage_per_test(corrections_data):
+    labels = []
+    allChartData = []
+    for item in corrections_data:
+        test = Test.objects.get(id=item['test'])
+        correction_per_candidate = item['correction_per_candidate']
+        chartData = []
+        for line in correction_per_candidate:
+            candidate = Candidate.objects.get(id=line['candidate'])
+            percentage = round(line['passed_percentage'], 2)
+            if candidate.username not in labels:
+                labels.append(candidate.username)
+            chartData.append(percentage)
+        data = {
+            'chartData': chartData,
+            'chartLabel': test.title
+        }
+        allChartData.append(data)
+    return labels, allChartData
+
+
+class ParticipantPercentagePerTest(APIView):
+    @check_offer_id
+    def get(self, request, *args, **kwargs):
+        if 'offer' in kwargs:
+            offer = kwargs['offer']
+            evaluations_for_offer = all_evaluations_for_offer(offer)
+            number_of_participants = candidates_from_evaluation(evaluations_for_offer)[0]
+            evaluations_for_test = all_evaluations_for_test(offer)
+            corrections_data = evaluation_correction(evaluations_for_test)
+            data_set = percentage_per_test(corrections_data)
+
+            labels = data_set[0]
+            all_chart_data = data_set[1]
+
+            data = {
+                'labels': labels,
+                'allChartData': all_chart_data
+            }
+            return Response(
+                data=data,
+                status=status.HTTP_200_OK
+            )
 
 
 class NumParticipantPerPeriod(APIView):
@@ -317,7 +373,7 @@ class BestParticipantProfileForOffer(APIView):
             number_of_participants = candidates_from_evaluation(evaluations_for_offer)[0]
             evaluations_for_test = all_evaluations_for_test(offer)
             corrections_data = evaluation_correction(evaluations_for_test)
-            num_success_per_test = candidate_passed_test(corrections_data)
+            num_success_per_test = candidate_passed_test(corrections_data)[0]
             candidate_succeeded_all_test = candidate_passed_all_test(number_of_participants, num_success_per_test)
             return Response(
                 data=candidate_succeeded_all_test,

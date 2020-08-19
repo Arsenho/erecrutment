@@ -50,6 +50,7 @@ class OfferList(generics.ListCreateAPIView):
     """
     queryset = Offer.objects.all()
     serializer_class = OfferSerializer
+    filterset_fields = ['published_by']
 
     @login_required_for_employer
     def post(self, request, *args, **kwargs):
@@ -102,6 +103,7 @@ class ApplyList(generics.ListCreateAPIView):
     # only a candidate can apply for a job offer
     @login_required_for_candidate
     def post(self, request, *args, **kwargs):
+        print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

@@ -23,7 +23,7 @@ def save_question_answer(view_function):
             else:
                 kwargs['question_incompatibility'] = True
         except Solution.DoesNotExist:
-            pass
+            kwargs['ok'] = False
         except TypeError:
             kwargs['conversion_error'] = True
         except ValueError:

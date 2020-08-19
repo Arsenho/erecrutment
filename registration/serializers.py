@@ -27,6 +27,7 @@ class UserMiniSerializer(serializers.ModelSerializer):
             'id',
             'email',
             'username',
+            'groups',
             'password'
         ]
         extra_kwargs = {'password': {'write_only': True}}

@@ -226,7 +226,13 @@ def update_questions_id(questions_ids):
     question_ = QuestionSerializer(
         Question.objects.get(id=question_id_)
     )
-    return questions_list_, question_
+    solutions = Solution.objects.filter(question=question_id_)
+    solution_serializer = SolutionSerializer(solutions, many=True)
+    my_data = {
+        'question': question_.data,
+        'solutions': solution_serializer.data
+    }
+    return questions_list_, my_data
 
 
 def get_generated_list(test):
@@ -235,10 +241,17 @@ def get_generated_list(test):
     generate = question_generator(questions)
     questions_list = [next(generate) for i in range(len(questions))]
     question_id = questions_list.pop()
+    solutions = Solution.objects.filter(question=question_id)
+    solution_serializer = SolutionSerializer(solutions, many=True)
     question = QuestionSerializer(
         Question.objects.get(id=question_id)
     )
-    return question, questions_list
+    my_data = {
+        'question': question.data,
+        'solutions': solution_serializer.data
+    }
+
+    return my_data, questions_list
 
 
 def save_evaluation_for_offer(request, evaluation):
@@ -275,12 +288,13 @@ class TakeEvaluation(generics.ListCreateAPIView):
             if 'QUESTIONS_IDS' not in request.session:
                 tests = list(request.session['tests'])
                 test = tests.pop(-1)
+                request.session['test'] = test['test']['id']
                 request.session['tests'] = tests
                 generate = get_generated_list(test['test'])
                 question = generate[0]
                 request.session['QUESTIONS_IDS'] = generate[1]
             return Response(
-                data=question.data,
+                data=question,
                 status=status.HTTP_200_OK
             )
         else:
@@ -298,6 +312,11 @@ class TakeEvaluation(generics.ListCreateAPIView):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.validated_data['candidate'] = kwargs['candidate']
+            if 'test' in request.session:
+                print("i have got a test")
+                current_test = request.session['test']
+                print(current_test)
+                serializer.validated_data['test'] = Test.objects.get(id=current_test)
             self.perform_create(serializer)
             save_evaluation_for_offer(request, evaluation=serializer.data)
 
@@ -306,11 +325,14 @@ class TakeEvaluation(generics.ListCreateAPIView):
             if 'QUESTIONS_IDS' not in request.session:
                 tests = list(request.session['tests'])
                 test = tests.pop(-1)
+                request.session['test'] = test['test']['id']
                 request.session['tests'] = tests
             if 'QUESTIONS_IDS' in request.session and \
                     (request.session['QUESTIONS_IDS'] != []):
                 updates = update_questions_id(list(request.session['QUESTIONS_IDS']))
                 question = updates[1]
+                print("this is question data : ")
+                print(question)
                 request.session['QUESTIONS_IDS'] = updates[0]
             else:
                 if 'QUESTIONS_IDS' in request.session and \
@@ -323,10 +345,12 @@ class TakeEvaluation(generics.ListCreateAPIView):
                 if 'tests' in request.session:
                     generate = get_generated_list(test['test'])
                     question = generate[0]
+                    print("this is question data : ")
+                    print(question)
                     request.session['QUESTIONS_IDS'] = generate[1]
 
             return Response(
-                data=question.data,
+                data=question,
                 status=status.HTTP_200_OK
             )
         else:
@@ -336,12 +360,12 @@ class TakeEvaluation(generics.ListCreateAPIView):
                 question = updates[1]
                 request.session['QUESTIONS_IDS'] = updates[0]
                 return Response(
-                    data=question.data,
+                    data=question,
                     status=status.HTTP_200_OK
                 )
 
             del request.session['tests']
             return Response(
-                data={'message': 'tous les tests termines !', 'finish': True},
+                data={'message': 'tous les tests termines !', 'all_finish': True},
                 status=status.HTTP_200_OK
             )

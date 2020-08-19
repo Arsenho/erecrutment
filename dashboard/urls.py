@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^api/dashboard/succeeded_all_tests', view=views.BestParticipantProfileForOffer.as_view()),
     url(r'^api/dashboard/appliance_per_date', view=views.NumParticipantPerPeriod.as_view()),
     url(r'^api/dashboard/candidates-per-test', view=views.NumParticipantPerTest.as_view()),
+    url(r'^api/dashboard/participant-percentage-per-test', view=views.ParticipantPercentagePerTest.as_view()),
 ]

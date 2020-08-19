@@ -45,7 +45,8 @@ class SolutionSerializer(serializers.ModelSerializer):
             'modified',
         ]
         extra_kwargs = {
-            'created_by': {'read_only': True}
+            'created_by': {'read_only': True},
+            'correct': {'write_only': True},
         }
 
 
@@ -55,5 +56,6 @@ class EvaluationSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {
             'candidate': {'read_only': True},
+            'test': {'read_only': True},
             'created': {'read_only': True},
         }
